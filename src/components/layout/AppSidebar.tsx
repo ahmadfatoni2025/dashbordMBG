@@ -1,6 +1,9 @@
-import { Home, Search, FolderOpen, Database, Zap, Settings, TrendingUp, Package } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { Home, Search, FolderOpen, Database, Zap, Settings, TrendingUp, Package, LogOut } from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -22,6 +25,18 @@ const navItems = [
 ];
 
 export const AppSidebar = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast({
+      title: "Logout berhasil",
+      description: "Anda telah keluar dari aplikasi.",
+    });
+    navigate("/auth");
+  };
+
   return (
     <Sidebar>
       <SidebarHeader className="p-6">
@@ -73,26 +88,14 @@ export const AppSidebar = () => {
       </SidebarContent>
 
       <SidebarFooter className="p-4 space-y-4 border-t border-border">
-        <div className="bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl p-4 border border-primary/20">
-          <p className="text-sm font-medium text-foreground mb-1">Trial Period</p>
-          <p className="text-xs text-muted-foreground mb-3">25 days remaining</p>
-          <button className="w-full bg-primary hover:bg-primary-hover text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-md hover:shadow-lg">
-            Upgrade Now
-          </button>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-bold text-sm shadow-md">
-            AS
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="font-semibold text-sm text-foreground truncate">Alex Smith</p>
-            <p className="text-xs text-muted-foreground">ACCOUNTADMIN</p>
-          </div>
-          <button className="p-2 hover:bg-muted rounded-lg transition-all">
-            <Settings className="w-4 h-4 text-muted-foreground" />
-          </button>
-        </div>
+        <Button
+          onClick={handleLogout}
+          variant="outline"
+          className="w-full justify-start gap-2"
+        >
+          <LogOut className="h-4 w-4" />
+          <span>Logout</span>
+        </Button>
       </SidebarFooter>
     </Sidebar>
   );
