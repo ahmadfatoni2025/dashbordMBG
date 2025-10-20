@@ -29,7 +29,7 @@ export const AppSidebar = () => {
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
             <Zap className="w-5 h-5 text-primary-foreground" />
           </div>
-          <h1 className="text-xl font-bold text-foreground">Snowflake</h1>
+          <h1 className="text-xl font-bold text-foreground">Nama username</h1>
         </div>
       </SidebarHeader>
 

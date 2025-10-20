@@ -13,15 +13,14 @@ const Home = () => {
             <span>Enterprise-Grade Product Management</span>
           </div>
           <h1 className="text-5xl md:text-6xl font-bold text-foreground leading-tight">
-            Manage Your Products
+            Optimalkan Pasokanmu, untuk
             <br />
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Like a Pro
+            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">
+              Makan Bergisi Gratis
             </span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Streamline your inventory management with our powerful, intuitive platform.
-            Track, update, and optimize your products effortlessly.
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-4">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, at.
           </p>
           <div className="flex gap-4 justify-center pt-4">
             <Button asChild size="lg" className="gap-2 shadow-lg hover:shadow-xl transition-shadow">

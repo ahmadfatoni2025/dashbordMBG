@@ -8,11 +8,9 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 
 const initialProducts: Product[] = [
-  { id: 1, name: 'Apple MacBook Pro 17"', color: 'Silver', category: 'Laptop', price: 2999, quantity: 1 },
-  { id: 2, name: 'Microsoft Surface Pro', color: 'White', category: 'Laptop PC', price: 1999, quantity: 1 },
-  { id: 3, name: 'Magic Mouse 2', color: 'Black', category: 'Accessories', price: 99, quantity: 1 },
-  { id: 4, name: 'Google Pixel Phone', color: 'Black', category: 'Phone', price: 799, quantity: 1 },
-  { id: 5, name: 'Apple Watch SE', color: 'Gold', category: 'Watch', price: 399, quantity: 1 },
+  { id: 1, name: 'Wortel', color: 'Oranye', category: 'Sayur', price: 5000, quantity: 1 },
+  { id: 2, name: 'Cabai Merah', color: 'Merah', category: 'Bumbu', price: 8000, quantity: 1 },
+  { id: 3, name: 'Daging Sapi', color: 'Merah', category: 'Lauk', price: 45000, quantity: 1 },
 ];
 
 const Products = () => {
@@ -86,12 +84,12 @@ const Products = () => {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Products</h1>
-            <p className="text-muted-foreground">Manage your product inventory</p>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Pesan stock barang MBG</h1>
+            <p className="text-muted-foreground">Managemen barang masuk dan keluar</p>
           </div>
           <Button onClick={handleAddNew} className="gap-2 shadow-md hover:shadow-lg transition-shadow">
             <Plus className="w-4 h-4" />
-            Add Product
+            tambah
           </Button>
         </div>
 
@@ -119,7 +117,7 @@ const Products = () => {
               </div>
             </div>
             <p className="text-2xl font-bold text-foreground">
-              ${products.reduce((sum, p) => sum + p.price * p.quantity, 0).toLocaleString()}
+              IDR {products.reduce((sum, p) => sum + p.price * p.quantity, 0).toLocaleString()}
             </p>
           </div>
 

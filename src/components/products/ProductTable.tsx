@@ -71,7 +71,7 @@ export const ProductTable = ({ products, onQuantityChange, onEdit, onDelete }: P
                   </span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-foreground font-semibold">${product.price.toLocaleString()}</span>
+                  <span className="text-foreground font-semibold">Rp.{product.price.toLocaleString()}</span>
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center justify-center gap-2">
