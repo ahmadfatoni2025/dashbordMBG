@@ -1,6 +1,17 @@
 import { Home, Search, FolderOpen, Database, Zap, Settings, TrendingUp, Package } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
 
 const navItems = [
   { to: "/", icon: Home, label: "Home" },
@@ -12,49 +23,56 @@ const navItems = [
 
 export const AppSidebar = () => {
   return (
-    <aside className="w-64 flex flex-col bg-card border-r border-border">
-      <div className="p-6">
+    <Sidebar>
+      <SidebarHeader className="p-6">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
             <Zap className="w-5 h-5 text-primary-foreground" />
           </div>
           <h1 className="text-xl font-bold text-foreground">Snowflake</h1>
         </div>
-      </div>
+      </SidebarHeader>
 
-      <nav className="flex-1 px-3">
-        <ul className="space-y-1">
-          {navItems.map((item) => (
-            <li key={item.to}>
-              <NavLink
-                to={item.to}
-                end={item.to === "/"}
-                className={({ isActive }) =>
-                  cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
-                    isActive
-                      ? "bg-secondary text-secondary-foreground shadow-sm"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  )
-                }
-              >
-                <item.icon className="w-5 h-5 flex-shrink-0" />
-                <span>{item.label}</span>
-              </NavLink>
-            </li>
-          ))}
-        </ul>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navItems.map((item) => (
+                <SidebarMenuItem key={item.to}>
+                  <SidebarMenuButton asChild>
+                    <NavLink
+                      to={item.to}
+                      end={item.to === "/"}
+                      className={({ isActive }) =>
+                        cn(
+                          isActive
+                            ? "bg-secondary text-secondary-foreground"
+                            : "text-muted-foreground hover:text-foreground"
+                        )
+                      }
+                    >
+                      <item.icon className="w-5 h-5" />
+                      <span>{item.label}</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
-        <div className="mt-6 px-3">
-          <button className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-all">
-            <Search className="w-5 h-5" />
-            <span>Search</span>
-            <kbd className="ml-auto px-2 py-1 text-xs bg-muted rounded">⌘K</kbd>
-          </button>
-        </div>
-      </nav>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <button className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-all">
+              <Search className="w-5 h-5" />
+              <span>Search</span>
+              <kbd className="ml-auto px-2 py-1 text-xs bg-muted rounded hidden md:inline">⌘K</kbd>
+            </button>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
 
-      <div className="p-4 space-y-4 border-t border-border">
+      <SidebarFooter className="p-4 space-y-4 border-t border-border">
         <div className="bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl p-4 border border-primary/20">
           <p className="text-sm font-medium text-foreground mb-1">Trial Period</p>
           <p className="text-xs text-muted-foreground mb-3">25 days remaining</p>
@@ -75,7 +93,7 @@ export const AppSidebar = () => {
             <Settings className="w-4 h-4 text-muted-foreground" />
           </button>
         </div>
-      </div>
-    </aside>
+      </SidebarFooter>
+    </Sidebar>
   );
 };
