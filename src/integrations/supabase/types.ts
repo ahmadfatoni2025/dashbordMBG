@@ -14,16 +14,320 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      chat_messages: {
+        Row: {
+          created_at: string | null
+          id: string
+          message: string
+          rejected_item_id: string | null
+          sender_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          message: string
+          rejected_item_id?: string | null
+          sender_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          message?: string
+          rejected_item_id?: string | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_rejected_item_id_fkey"
+            columns: ["rejected_item_id"]
+            isOneToOne: false
+            referencedRelation: "rejected_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      food_conditions: {
+        Row: {
+          condition: string
+          created_at: string | null
+          fit_for_processing: boolean
+          id: string
+          inspection_date: string | null
+          inspector_id: string
+          notes: string | null
+          product_id: string | null
+          product_name: string
+        }
+        Insert: {
+          condition: string
+          created_at?: string | null
+          fit_for_processing?: boolean
+          id?: string
+          inspection_date?: string | null
+          inspector_id: string
+          notes?: string | null
+          product_id?: string | null
+          product_name: string
+        }
+        Update: {
+          condition?: string
+          created_at?: string | null
+          fit_for_processing?: boolean
+          id?: string
+          inspection_date?: string | null
+          inspector_id?: string
+          notes?: string | null
+          product_id?: string | null
+          product_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "food_conditions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoice_items: {
+        Row: {
+          created_at: string | null
+          id: string
+          invoice_id: string | null
+          price: number
+          product_id: string | null
+          product_name: string
+          quantity: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          invoice_id?: string | null
+          price: number
+          product_id?: string | null
+          product_name: string
+          quantity: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          invoice_id?: string | null
+          price?: number
+          product_id?: string | null
+          product_name?: string
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoice_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          created_at: string | null
+          id: string
+          invoice_number: string
+          status: string
+          total_amount: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          invoice_number: string
+          status?: string
+          total_amount: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          invoice_number?: string
+          status?: string
+          total_amount?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          category: string
+          color: string | null
+          created_at: string | null
+          id: string
+          name: string
+          price: number
+          quantity: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          category: string
+          color?: string | null
+          created_at?: string | null
+          id?: string
+          name: string
+          price: number
+          quantity?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string
+          color?: string | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          price?: number
+          quantity?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      rejected_items: {
+        Row: {
+          created_at: string | null
+          id: string
+          product_id: string | null
+          product_name: string
+          quantity: number
+          reason: string
+          seller_id: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          product_id?: string | null
+          product_name: string
+          quantity: number
+          reason: string
+          seller_id: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          product_id?: string | null
+          product_name?: string
+          quantity?: number
+          reason?: string
+          seller_id?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rejected_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      returns: {
+        Row: {
+          created_at: string | null
+          id: string
+          product_id: string | null
+          product_name: string
+          quantity: number
+          reason: string
+          return_number: string
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          product_id?: string | null
+          product_name: string
+          quantity: number
+          reason: string
+          return_number: string
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          product_id?: string | null
+          product_name?: string
+          quantity?: number
+          reason?: string
+          return_number?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "returns_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user" | "seller"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +454,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user", "seller"],
+    },
   },
 } as const

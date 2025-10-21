@@ -13,6 +13,10 @@ import Database from "./pages/Database";
 import Projects from "./pages/Projects";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Invoices from "./pages/Invoices";
+import Returns from "./pages/Returns";
+import FoodCondition from "./pages/FoodCondition";
+import Rejected from "./pages/Rejected";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +44,10 @@ const App = () => (
                         <Routes>
                           <Route path="/" element={<Home />} />
                           <Route path="/products" element={<Products />} />
+                          <Route path="/invoices" element={<Invoices />} />
+                          <Route path="/returns" element={<Returns />} />
+                          <Route path="/food-condition" element={<FoodCondition />} />
+                          <Route path="/rejected" element={<Rejected />} />
                           <Route path="/analytics" element={<Analytics />} />
                           <Route path="/database" element={<Database />} />
                           <Route path="/projects" element={<Projects />} />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, Search, Filter, Download } from "lucide-react";
 import { Product, ProductFormData } from "@/types/product";
 import { ProductTable } from "@/components/products/ProductTable";
@@ -6,6 +6,9 @@ import { ProductDialog } from "@/components/products/ProductDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const initialProducts: Product[] = [
   { id: 1, name: 'Wortel', color: 'Oranye', category: 'Sayur', price: 5000, quantity: 1 },
@@ -14,10 +17,47 @@ const initialProducts: Product[] = [
 ];
 
 const Products = () => {
-  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [products, setProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      
+      setProducts(data?.map((p, index) => ({
+        id: index + 1,
+        name: p.name,
+        color: p.color || '',
+        category: p.category,
+        price: parseFloat(p.price.toString()),
+        quantity: p.quantity
+      })) || []);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load products",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -36,27 +76,67 @@ const Products = () => {
     );
   };
 
-  const handleSubmit = (data: ProductFormData) => {
-    if (editingProduct) {
-      setProducts((prev) =>
-        prev.map((p) => (p.id === editingProduct.id ? { ...p, ...data } : p))
-      );
+  const handleSubmit = async (data: ProductFormData) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      if (editingProduct) {
+        const productToUpdate = await supabase
+          .from("products")
+          .select("id")
+          .eq("name", editingProduct.name)
+          .single();
+
+        if (!productToUpdate.data) return;
+
+        const { error } = await supabase
+          .from("products")
+          .update({
+            name: data.name,
+            color: data.color,
+            category: data.category,
+            price: data.price,
+            quantity: data.quantity,
+          })
+          .eq("id", productToUpdate.data.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "Product updated",
+          description: "The product has been updated successfully.",
+        });
+      } else {
+        const { error } = await supabase
+          .from("products")
+          .insert({
+            name: data.name,
+            color: data.color,
+            category: data.category,
+            price: data.price,
+            quantity: data.quantity,
+            user_id: user.id,
+          });
+
+        if (error) throw error;
+
+        toast({
+          title: "Product added",
+          description: "The product has been added successfully.",
+        });
+      }
+      
+      setEditingProduct(null);
+      fetchProducts();
+    } catch (error) {
+      console.error("Error saving product:", error);
       toast({
-        title: "Product updated",
-        description: "The product has been updated successfully.",
-      });
-    } else {
-      const newProduct: Product = {
-        id: Math.max(...products.map((p) => p.id), 0) + 1,
-        ...data,
-      };
-      setProducts((prev) => [...prev, newProduct]);
-      toast({
-        title: "Product added",
-        description: "The product has been added successfully.",
+        title: "Error",
+        description: "Failed to save product",
+        variant: "destructive",
       });
     }
-    setEditingProduct(null);
   };
 
   const handleEdit = (product: Product) => {
@@ -64,12 +144,70 @@ const Products = () => {
     setDialogOpen(true);
   };
 
-  const handleDelete = (id: number) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id));
+  const handleDelete = async (id: number) => {
+    try {
+      const productToDelete = products[id - 1];
+      if (!productToDelete) return;
+
+      const { error } = await supabase
+        .from("products")
+        .delete()
+        .eq("name", productToDelete.name)
+        .eq("category", productToDelete.category);
+
+      if (error) throw error;
+
+      toast({
+        title: "Product deleted",
+        description: "The product has been deleted successfully.",
+        variant: "destructive",
+      });
+      
+      fetchProducts();
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete product",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    
+    // Add title
+    doc.setFontSize(18);
+    doc.text("Invoice - Product List", 14, 22);
+    
+    // Add date
+    doc.setFontSize(11);
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 32);
+    
+    // Add table
+    autoTable(doc, {
+      startY: 40,
+      head: [['Product Name', 'Category', 'Color', 'Quantity', 'Price', 'Total']],
+      body: filteredProducts.map(p => [
+        p.name,
+        p.category,
+        p.color,
+        p.quantity.toString(),
+        `IDR ${p.price.toLocaleString()}`,
+        `IDR ${(p.price * p.quantity).toLocaleString()}`
+      ]),
+      foot: [['', '', '', '', 'Grand Total:', `IDR ${filteredProducts.reduce((sum, p) => sum + p.price * p.quantity, 0).toLocaleString()}`]],
+      theme: 'grid',
+      headStyles: { fillColor: [79, 70, 229] },
+      footStyles: { fillColor: [240, 240, 240], textColor: [0, 0, 0], fontStyle: 'bold' }
+    });
+    
+    doc.save(`invoice-${new Date().toISOString().split('T')[0]}.pdf`);
+    
     toast({
-      title: "Product deleted",
-      description: "The product has been deleted successfully.",
-      variant: "destructive",
+      title: "PDF Exported",
+      description: "Invoice has been exported successfully.",
     });
   };
 
@@ -166,9 +304,9 @@ const Products = () => {
                 <Filter className="w-4 h-4" />
                 Filter
               </Button>
-              <Button variant="outline" className="gap-2">
+              <Button variant="outline" className="gap-2" onClick={handleExportPDF}>
                 <Download className="w-4 h-4" />
-                Export
+                Export PDF
               </Button>
             </div>
           </div>

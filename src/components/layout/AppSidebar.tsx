@@ -1,4 +1,4 @@
-import { Home, Search, FolderOpen, Database, Zap, Settings, TrendingUp, Package, LogOut } from "lucide-react";
+import { Home, Search, FolderOpen, Database, Zap, Settings, TrendingUp, Package, LogOut, FileText, PackageX, Apple, Ban } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +19,10 @@ import {
 const navItems = [
   { to: "/", icon: Home, label: "Home" },
   { to: "/products", icon: Package, label: "Products" },
+  { to: "/invoices", icon: FileText, label: "Invoices" },
+  { to: "/returns", icon: PackageX, label: "Returns" },
+  { to: "/food-condition", icon: Apple, label: "Food Condition" },
+  { to: "/rejected", icon: Ban, label: "Rejected (Admin)" },
   { to: "/analytics", icon: TrendingUp, label: "Analytics" },
   { to: "/database", icon: Database, label: "Database" },
   { to: "/projects", icon: FolderOpen, label: "Projects" },
